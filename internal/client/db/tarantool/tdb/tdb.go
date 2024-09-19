@@ -1,7 +1,7 @@
 package tdb
 
 import (
-	db "drs_data_loader/internal/client/db/tarantool"
+	db "github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
 
 	"github.com/tarantool/go-tarantool/v2"
 )

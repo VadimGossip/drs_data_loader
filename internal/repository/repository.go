@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"drs_data_loader/internal/model"
+	"github.com/VadimGossip/drs_data_loader/internal/model"
 )
 
 type DstRatesRepository interface {

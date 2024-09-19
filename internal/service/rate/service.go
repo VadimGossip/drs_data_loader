@@ -1,8 +1,8 @@
 package rate
 
 import (
-	"drs_data_loader/internal/repository"
-	def "drs_data_loader/internal/service"
+	"github.com/VadimGossip/drs_data_loader/internal/repository"
+	def "github.com/VadimGossip/drs_data_loader/internal/service"
 
 	db "github.com/VadimGossip/platform_common/pkg/db/oracle"
 )

@@ -2,11 +2,11 @@ package app
 
 import (
 	"context"
-	"drs_data_loader/internal/client/db/tarantool"
-	"drs_data_loader/internal/client/db/tarantool/tdb"
-	"drs_data_loader/internal/repository"
-	"drs_data_loader/internal/service"
-	"drs_data_loader/internal/service/rate"
+	"github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
+	"github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool/tdb"
+	"github.com/VadimGossip/drs_data_loader/internal/repository"
+	"github.com/VadimGossip/drs_data_loader/internal/service"
+	"github.com/VadimGossip/drs_data_loader/internal/service/rate"
 	"log"
 
 	"github.com/VadimGossip/platform_common/pkg/db/oracle"
@@ -14,12 +14,12 @@ import (
 	"github.com/VadimGossip/platform_common/pkg/db/oracle/transaction"
 	"github.com/sirupsen/logrus"
 
-	"drs_data_loader/internal/closer"
-	"drs_data_loader/internal/config"
-	dbCfg "drs_data_loader/internal/config/db"
-	serverCfg "drs_data_loader/internal/config/server"
-	srcRateRepo "drs_data_loader/internal/repository/rate/oracle"
-	dstRateRepo "drs_data_loader/internal/repository/rate/tarantool"
+	"github.com/VadimGossip/drs_data_loader/internal/closer"
+	"github.com/VadimGossip/drs_data_loader/internal/config"
+	dbCfg "github.com/VadimGossip/drs_data_loader/internal/config/db"
+	serverCfg "github.com/VadimGossip/drs_data_loader/internal/config/server"
+	srcRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/oracle"
+	dstRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool"
 )
 
 type serviceProvider struct {

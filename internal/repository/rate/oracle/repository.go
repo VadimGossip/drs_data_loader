@@ -3,9 +3,9 @@ package oracle
 import (
 	"context"
 	"database/sql"
-	"drs_data_loader/internal/model"
-	def "drs_data_loader/internal/repository"
 	"fmt"
+	"github.com/VadimGossip/drs_data_loader/internal/model"
+	def "github.com/VadimGossip/drs_data_loader/internal/repository"
 	"time"
 
 	db "github.com/VadimGossip/platform_common/pkg/db/oracle"

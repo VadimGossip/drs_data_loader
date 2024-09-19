@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"drs_data_loader/internal/closer"
+	"github.com/VadimGossip/drs_data_loader/internal/closer"
 
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"

@@ -1,6 +1,6 @@
 package converter
 
-import "drs_data_loader/internal/model"
+import "github.com/VadimGossip/drs_data_loader/internal/model"
 
 func ToRepoFromBRmsgGroups(groups map[model.BRmsgKey][]model.IdHistItem) [][]interface{} {
 	result := make([][]interface{}, 0, len(groups))

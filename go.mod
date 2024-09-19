@@ -1,4 +1,4 @@
-module drs_data_loader
+module github.com/VadimGossip/drs_data_loader
 
 go 1.22.5
 

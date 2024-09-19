@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"drs_data_loader/internal/app"
+	"github.com/VadimGossip/drs_data_loader/internal/app"
 	"time"
 
 	"github.com/sirupsen/logrus"

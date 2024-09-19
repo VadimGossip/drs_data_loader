@@ -1,11 +1,11 @@
 package tarantool
 
 import (
-	db "drs_data_loader/internal/client/db/tarantool"
-	"drs_data_loader/internal/model"
-	"drs_data_loader/internal/repository/rate/tarantool/converter"
+	db "github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
+	"github.com/VadimGossip/drs_data_loader/internal/model"
+	"github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool/converter"
 
-	def "drs_data_loader/internal/repository"
+	def "github.com/VadimGossip/drs_data_loader/internal/repository"
 
 	"github.com/tarantool/go-tarantool/v2"
 )

@@ -2,8 +2,8 @@ package rate
 
 import (
 	"context"
-	"drs_data_loader/internal/model"
 	"fmt"
+	"github.com/VadimGossip/drs_data_loader/internal/model"
 	"time"
 
 	"github.com/sirupsen/logrus"

@@ -6,7 +6,7 @@ import (
 
 	"github.com/tarantool/go-tarantool/v2"
 
-	db "drs_data_loader/internal/client/db/tarantool"
+	db "github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
 )
 
 type tdbClient struct {
