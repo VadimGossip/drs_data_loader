@@ -3,25 +3,6 @@ module github.com/VadimGossip/drs_data_loader
 go 1.22.5
 
 require (
-	github.com/IBM/sarama v1.43.3
-	github.com/Masterminds/squirrel v1.5.4
-	github.com/VadimGossip/concoleChat-auth v0.0.0-20240827141607-b88bc137b003
-	github.com/VadimGossip/platform_common v1.0.5-0.20240905180856-dbe5e15289e5
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gin-gonic/gin v1.10.0
-	github.com/gojuno/minimock/v3 v3.4.0
-	github.com/jackc/pgx/v4 v4.18.3
-	github.com/joho/godotenv v1.5.1
-	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.9.3
-	github.com/stretchr/testify v1.9.0
-	go.uber.org/zap v1.27.0
-	golang.org/x/crypto v0.26.0
-	google.golang.org/grpc v1.66.0
-	google.golang.org/protobuf v1.34.2
-)
-
-require (
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
