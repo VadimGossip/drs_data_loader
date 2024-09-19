@@ -3,7 +3,7 @@ module github.com/VadimGossip/drs_data_loader
 go 1.22.5
 
 require (
-	github.com/VadimGossip/platform_common v1.0.4
+	github.com/VadimGossip/platform_common v1.0.5-0.20240905180856-dbe5e15289e5
 	github.com/gin-gonic/gin v1.10.0
 	github.com/godror/godror v0.44.2
 	github.com/joho/godotenv v1.5.1
