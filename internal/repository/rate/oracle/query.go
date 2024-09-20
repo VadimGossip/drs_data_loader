@@ -58,13 +58,15 @@ const sqlRTSQuery string = `
 
 const sqlRVCountQuery string = `
      select count(*)
-       from rms_rate_values v`
+       from rms_rate_values v
+        and v.rmsv_id = 42740`
 
 const sqlRVQuery string = `
      select v.rmsv_id
            ,v.currency_id
            ,nvl(v.price1, 0) as price
-       from rms_rate_values v`
+       from rms_rate_values v
+        and v.rmsv_id = 42740`
 
 const sqlCURRTSCountQuery string = `
      select count(*)
