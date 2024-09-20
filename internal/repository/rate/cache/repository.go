@@ -62,9 +62,7 @@ func (r *repository) LoadCurrencyRates(curRates map[int64][]model.CurrencyRateHi
 }
 
 func (r *repository) getBRmsg(key model.BRmsgKey, dateAt int64) (int64, error) {
-	fmt.Println(len(r.data.bRmsgs))
 	for i := len(key.Code); i > 0; i-- {
-		fmt.Println(key, dateAt)
 		if h, ok := r.data.bRmsgs[key]; ok {
 			for _, item := range h {
 				if item.DBegin <= dateAt && item.DEnd > dateAt {
@@ -92,6 +90,7 @@ func (r *repository) getARmsg(key model.ARmsgKey, dateAt int64) int64 {
 }
 
 func (r *repository) getRmsrRmsvPair(key model.RateKey, dateAt int64) (int64, int64, error) {
+	fmt.Println(key)
 	if h, ok := r.data.rmsvs[key]; ok {
 		for _, item := range h {
 			if item.DBegin <= dateAt && item.DEnd > dateAt {
