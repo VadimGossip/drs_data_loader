@@ -44,6 +44,7 @@ func (a *App) initDeps(ctx context.Context) error {
 		a.initEnv,
 		a.initServiceProvider,
 		a.initHTTPServer,
+		a.initGRPCServer,
 	}
 
 	for _, f := range inits {

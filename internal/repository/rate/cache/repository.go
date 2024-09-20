@@ -21,7 +21,7 @@ type repository struct {
 	data data
 }
 
-func NewService() *repository {
+func NewRepository() *repository {
 	return &repository{}
 }
 

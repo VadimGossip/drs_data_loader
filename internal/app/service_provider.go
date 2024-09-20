@@ -17,8 +17,8 @@ import (
 	dbCfg "github.com/VadimGossip/drs_data_loader/internal/config/db"
 	serverCfg "github.com/VadimGossip/drs_data_loader/internal/config/server"
 	"github.com/VadimGossip/drs_data_loader/internal/repository"
+	dstRateCacheRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/cache"
 	srcRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/oracle"
-	dstRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool"
 	"github.com/VadimGossip/drs_data_loader/internal/service"
 	rateService "github.com/VadimGossip/drs_data_loader/internal/service/rate"
 )
@@ -126,9 +126,9 @@ func (s *serviceProvider) SrcRateRepo(ctx context.Context) repository.SrcRatesRe
 	return s.srcRateRepo
 }
 
-func (s *serviceProvider) DstRateRepo(ctx context.Context) repository.DstRatesRepository {
+func (s *serviceProvider) DstRateRepo(_ context.Context) repository.DstRatesRepository {
 	if s.dstRateRepo == nil {
-		s.dstRateRepo = dstRateRepo.NewRepository(s.TarantoolClient(ctx))
+		s.dstRateRepo = dstRateCacheRepo.NewRepository()
 	}
 	return s.dstRateRepo
 }
