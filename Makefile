@@ -16,3 +16,12 @@ get-deps:
 	go get -u google.golang.org/protobuf/cmd/protoc-gen-go
 	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	go get -u github.com/gojuno/minimock/v3
+
+generate-rate-api:
+	mkdir -p pkg/rate_v1
+	protoc --proto_path api/rate_v1 \
+	--go_out=pkg/rate_v1 --go_opt=paths=source_relative \
+	--plugin=protoc-gen-go=bin/protoc-gen-go.exe \
+	--go-grpc_out=pkg/rate_v1 --go-grpc_opt=paths=source_relative \
+	--plugin=protoc-gen-go-grpc=bin/protoc-gen-go-grpc.exe \
+	api/rate_v1/rate.proto

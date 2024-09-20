@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package rate_v1;
+
+option go_package = "github.com/VadimGossip/drs_data_loader/pkg/rate_v1;rate_v1";
+
+service RateV1 {
+  rpc FindRate(FindRateRequest) returns (FindRateResponse);
+}
+
+message FindRateRequest {
+  int64 gwgrId = 1;
+  int64 dateAt = 2;
+  uint32 dir = 3;
+  string aNumber = 4;
+  string bNumber = 5;
+}
+
+message FindRateResponse {
+  int64 rmsrId = 1;
+  double priceBase = 2;
+}

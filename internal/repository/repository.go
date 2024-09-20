@@ -12,6 +12,7 @@ type DstRatesRepository interface {
 	LoadRates(data map[model.RateKey][]model.RmsRateHistItem) error
 	LoadRateValues(data map[int64]model.Rate) error
 	LoadCurrencyRates(data map[int64][]model.CurrencyRateHist) error
+	FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber string) (int64, float64, error)
 }
 
 type SrcRatesRepository interface {

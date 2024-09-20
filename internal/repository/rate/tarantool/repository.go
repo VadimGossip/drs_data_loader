@@ -1,6 +1,7 @@
 package tarantool
 
 import (
+	"fmt"
 	db "github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
 	"github.com/VadimGossip/drs_data_loader/internal/model"
 	"github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool/converter"
@@ -58,4 +59,8 @@ func (r *repository) LoadRateValues(data map[int64]model.Rate) error {
 func (r *repository) LoadCurrencyRates(data map[int64][]model.CurrencyRateHist) error {
 	_, err := r.db.DB().Do(tarantool.NewCallRequest(insertCurrencyRatesFunc).Args([]interface{}{converter.ToRepoFromCurrencyRates(data)})).Get()
 	return err
+}
+
+func (r *repository) FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber string) (int64, float64, error) {
+	return 0, 0, fmt.Errorf("not implemented")
 }
