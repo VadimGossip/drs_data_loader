@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +14,6 @@ import (
 	"github.com/VadimGossip/drs_data_loader/internal/closer"
 
 	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
@@ -77,7 +77,7 @@ func (a *App) Run(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 
 	wg := &sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(1)
 
 	go func() {
 		defer wg.Done()
@@ -98,9 +98,16 @@ func (a *App) Run(ctx context.Context) error {
 
 	go func() {
 		defer wg.Done()
-		err := a.runGRPCServer()
-		if err != nil {
+		if err := a.runGRPCServer(); !errors.Is(err, grpc.ErrServerStopped) {
 			logrus.Fatalf("%s failed to run GRPC server: %v", a.name, err)
+		}
+	}()
+
+	go func() {
+		select {
+		case <-ctx.Done():
+			logrus.Infof("shuting down grpcServer")
+			a.grpcServer.GracefulStop()
 		}
 	}()
 
