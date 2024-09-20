@@ -15,6 +15,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 )
 
 type App struct {
@@ -22,6 +23,7 @@ type App struct {
 	name            string
 	appStartedAt    time.Time
 	httpServer      *http.Server
+	grpcServer      *grpc.Server
 }
 
 func NewApp(ctx context.Context, name string, appStartedAt time.Time) (*App, error) {
@@ -74,7 +76,7 @@ func (a *App) Run(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 
 	wg := &sync.WaitGroup{}
-	wg.Add(1)
+	wg.Add(2)
 
 	go func() {
 		defer wg.Done()
@@ -93,6 +95,14 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	}()
 
+	go func() {
+		defer wg.Done()
+		err := a.runGRPCServer()
+		if err != nil {
+			logrus.Fatalf("%s failed to run GRPC server: %v", a.name, err)
+		}
+	}()
+
 	if err := a.serviceProvider.RateService(ctx).Refresh(ctx); err != nil {
 		logrus.Errorf("[%s] failed to rate service: %v", a.name, err)
 	}
@@ -102,12 +112,12 @@ func (a *App) Run(ctx context.Context) error {
 }
 
 func gracefulShutdown(ctx context.Context, cancel context.CancelFunc, wg *sync.WaitGroup) {
-	//select {
-	//case <-ctx.Done():
-	//	logrus.Info("terminating: context cancelled")
-	//case c := <-waitSignal():
-	//	logrus.Infof("terminating: got signal: [%s]", c)
-	//}
+	select {
+	case <-ctx.Done():
+		logrus.Info("terminating: context cancelled")
+	case c := <-waitSignal():
+		logrus.Infof("terminating: got signal: [%s]", c)
+	}
 
 	cancel()
 	if wg != nil {

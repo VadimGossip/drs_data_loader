@@ -2,28 +2,30 @@ package app
 
 import (
 	"context"
-	"github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
-	"github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool/tdb"
-	"github.com/VadimGossip/drs_data_loader/internal/repository"
-	"github.com/VadimGossip/drs_data_loader/internal/service"
-	"github.com/VadimGossip/drs_data_loader/internal/service/rate"
 	"log"
 
+	"github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
+	"github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool/tdb"
 	"github.com/VadimGossip/platform_common/pkg/db/oracle"
 	"github.com/VadimGossip/platform_common/pkg/db/oracle/odb"
 	"github.com/VadimGossip/platform_common/pkg/db/oracle/transaction"
 	"github.com/sirupsen/logrus"
 
+	"github.com/VadimGossip/drs_data_loader/internal/api/rate"
 	"github.com/VadimGossip/drs_data_loader/internal/closer"
 	"github.com/VadimGossip/drs_data_loader/internal/config"
 	dbCfg "github.com/VadimGossip/drs_data_loader/internal/config/db"
 	serverCfg "github.com/VadimGossip/drs_data_loader/internal/config/server"
+	"github.com/VadimGossip/drs_data_loader/internal/repository"
 	srcRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/oracle"
 	dstRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool"
+	"github.com/VadimGossip/drs_data_loader/internal/service"
+	rateService "github.com/VadimGossip/drs_data_loader/internal/service/rate"
 )
 
 type serviceProvider struct {
 	httpConfig   config.HTTPConfig
+	grpcConfig   config.GRPCConfig
 	oracleConfig config.OracleConfig
 
 	oracleClient    oracle.Client
@@ -33,6 +35,8 @@ type serviceProvider struct {
 	dstRateRepo     repository.DstRatesRepository
 
 	rateService service.RateService
+
+	rateImpl *rate.Implementation
 }
 
 func newServiceProvider() *serviceProvider {
@@ -50,6 +54,19 @@ func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
 	}
 
 	return s.httpConfig
+}
+
+func (s *serviceProvider) GRPCConfig() config.GRPCConfig {
+	if s.grpcConfig == nil {
+		cfg, err := serverCfg.NewGRPCConfig()
+		if err != nil {
+			log.Fatalf("failed to get grpcConfig: %s", err)
+		}
+
+		s.grpcConfig = cfg
+	}
+
+	return s.grpcConfig
 }
 
 func (s *serviceProvider) OracleConfig() config.OracleConfig {
@@ -118,7 +135,15 @@ func (s *serviceProvider) DstRateRepo(ctx context.Context) repository.DstRatesRe
 
 func (s *serviceProvider) RateService(ctx context.Context) service.RateService {
 	if s.rateService == nil {
-		s.rateService = rate.NewService(s.DstRateRepo(ctx), s.SrcRateRepo(ctx), s.txManager)
+		s.rateService = rateService.NewService(s.DstRateRepo(ctx), s.SrcRateRepo(ctx), s.txManager)
 	}
 	return s.rateService
+}
+
+func (s *serviceProvider) RateImpl(ctx context.Context) *rate.Implementation {
+	if s.rateImpl == nil {
+		s.rateImpl = rate.NewImplementation(s.RateService(ctx))
+	}
+
+	return s.rateImpl
 }
