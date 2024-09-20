@@ -115,7 +115,7 @@ func (r *repository) getCurrencyRate(currencyId int64, dateAt int64) (float64, e
 		fmt.Println(key, val)
 	}
 	if hist, ok := r.data.curRates[currencyId]; ok {
-		fmt.Println(currencyId, dateAt)
+		fmt.Println("found", currencyId, dateAt)
 		for _, item := range hist {
 			fmt.Println(currencyId, dateAt, item.DBegin, item.DEnd)
 			if dateAt >= item.DBegin && dateAt < item.DEnd {
