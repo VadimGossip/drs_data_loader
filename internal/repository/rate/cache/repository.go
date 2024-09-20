@@ -108,8 +108,13 @@ func (r *repository) getRateValue(rmsvId int64) (model.Rate, error) {
 }
 
 func (r *repository) getCurrencyRate(currencyId int64, dateAt int64) (float64, error) {
-
 	fmt.Println(currencyId, dateAt)
+	for key, val := range r.data.curRates {
+		if key != 3 {
+			continue
+		}
+		fmt.Println(key, val)
+	}
 	if hist, ok := r.data.curRates[currencyId]; ok {
 		fmt.Println(currencyId, dateAt)
 		for _, item := range hist {
