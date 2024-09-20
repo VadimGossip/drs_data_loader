@@ -95,7 +95,7 @@ func (r *repository) getRmsrRmsvPair(key model.RateKey, dateAt int64) (int64, in
 		fmt.Println(key)
 		for _, item := range h {
 			if item.DBegin <= dateAt && item.DEnd > dateAt {
-				return item.RmsrId, item.RmsrId, nil
+				return item.RmsrId, item.RmsvId, nil
 			}
 		}
 	}
