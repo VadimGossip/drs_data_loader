@@ -110,6 +110,7 @@ func (r *repository) getRateValue(rmsvId int64) (model.Rate, error) {
 func (r *repository) getCurrencyRate(currencyId int64, dateAt int64) (float64, error) {
 	for key, val := range r.data.curRates {
 		if key != currencyId {
+			fmt.Println(key, currencyId)
 			continue
 		}
 		fmt.Println(key, val)
