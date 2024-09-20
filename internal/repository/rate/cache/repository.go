@@ -90,9 +90,7 @@ func (r *repository) getARmsg(key model.ARmsgKey, dateAt int64) int64 {
 }
 
 func (r *repository) getRmsrRmsvPair(key model.RateKey, dateAt int64) (int64, int64, error) {
-	fmt.Println(key)
 	if h, ok := r.data.rmsvs[key]; ok {
-		fmt.Println(key)
 		for _, item := range h {
 			if item.DBegin <= dateAt && item.DEnd > dateAt {
 				return item.RmsrId, item.RmsvId, nil
@@ -110,6 +108,9 @@ func (r *repository) getRateValue(rmsvId int64) (model.Rate, error) {
 }
 
 func (r *repository) getCurrencyRate(currencyId int64, dateAt int64) (float64, error) {
+
+	fmt.Println(r.data.curRates)
+	fmt.Println(currencyId, dateAt)
 	if hist, ok := r.data.curRates[currencyId]; ok {
 		for _, item := range hist {
 			if dateAt >= item.DBegin && dateAt < item.DEnd {
