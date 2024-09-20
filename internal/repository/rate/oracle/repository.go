@@ -249,9 +249,6 @@ func (r *repository) GetRateValues(ctx context.Context) (map[int64]model.Rate, i
 			CurrencyId: currencyId,
 		}
 		result[rmsvId] = rv
-		if rmsvId == 42740 {
-			fmt.Println("loaded")
-		}
 		actualRows++
 	}
 	if expectRows != actualRows {

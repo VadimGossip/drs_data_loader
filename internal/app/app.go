@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
@@ -75,7 +74,6 @@ func (a *App) Run(ctx context.Context) error {
 		closer.CloseAll()
 		closer.Wait()
 	}()
-	fmt.Println(time.Now().Unix())
 	ctx, cancel := context.WithCancel(ctx)
 
 	wg := &sync.WaitGroup{}

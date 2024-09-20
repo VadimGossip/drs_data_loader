@@ -37,22 +37,30 @@ func (r *repository) TruncateData() error {
 }
 
 func (r *repository) LoadBGroups(bRmsgs map[model.BRmsgKey][]model.IdHistItem) error {
-	r.data.bRmsgs = bRmsgs
+	for key, val := range bRmsgs {
+		r.data.bRmsgs[key] = val
+	}
 	return nil
 }
 
 func (r *repository) LoadAGroups(aRmsgs map[model.ARmsgKey][]model.IdHistItem) error {
-	r.data.aRmsgs = aRmsgs
+	for key, val := range aRmsgs {
+		r.data.aRmsgs[key] = val
+	}
 	return nil
 }
 
 func (r *repository) LoadRates(rmsvs map[model.RateKey][]model.RmsRateHistItem) error {
-	r.data.rmsvs = rmsvs
+	for key, val := range rmsvs {
+		r.data.rmsvs[key] = val
+	}
 	return nil
 }
 
 func (r *repository) LoadRateValues(rates map[int64]model.Rate) error {
-	r.data.rates = rates
+	for key, val := range rates {
+		r.data.rates[key] = val
+	}
 	return nil
 }
 
@@ -101,12 +109,6 @@ func (r *repository) getRmsrRmsvPair(key model.RateKey, dateAt int64) (int64, in
 }
 
 func (r *repository) getRateValue(rmsvId int64) (model.Rate, error) {
-	for key := range r.data.rates {
-		if key == 42740 {
-			fmt.Println("getRateValue", key, rmsvId)
-		}
-	}
-
 	if rv, ok := r.data.rates[rmsvId]; ok {
 		return rv, nil
 	}
@@ -151,7 +153,6 @@ func (r *repository) FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber 
 		return 0, 0, err
 	}
 
-	fmt.Println("getRmsrRmsvPair", rmsrId, rmsvId)
 	rv, err := r.getRateValue(rmsvId)
 	if err != nil {
 		return 0, 0, err

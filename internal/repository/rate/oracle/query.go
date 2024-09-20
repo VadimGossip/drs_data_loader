@@ -23,8 +23,7 @@ const sqlRAQuery string = `
 const sqlRBCountQuery string = `
 	 select count(*)
        from rms_rate_bgroup_codes bc
-      where bc.dend > sysdate
-        and bc.gwgr_id = 4728`
+      where bc.dend > sysdate`
 
 const sqlRBQuery string = `
 	select /*+ index(bc PK_RMSRBGC) */ bc.rmsg_id
@@ -34,14 +33,12 @@ const sqlRBQuery string = `
           ,bc.dbegin
           ,bc.dend
       from rms_rate_bgroup_codes bc
-     where bc.dend > sysdate
-       and bc.gwgr_id = 4728`
+     where bc.dend > sysdate`
 
 const sqlRTSCountQuery string = `
     select count(*)
 	  from rms_rates r
-	 where r.dend > sysdate
-       and r.gwgr_id = 4728`
+	 where r.dend > sysdate`
 
 const sqlRTSQuery string = `
    select r.gwgr_id
@@ -53,8 +50,7 @@ const sqlRTSQuery string = `
          ,r.dbegin
          ,r.dend
      from rms_rates r
-    where r.dend > sysdate
-      and r.gwgr_id = 4728`
+    where r.dend > sysdate`
 
 const sqlRVCountQuery string = `
      select count(*)
