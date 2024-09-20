@@ -40,7 +40,8 @@ const sqlRBQuery string = `
 const sqlRTSCountQuery string = `
     select count(*)
 	  from rms_rates r
-	 where r.dend > sysdate`
+	 where r.dend > sysdate
+       and r.gwgr_id = 4728`
 
 const sqlRTSQuery string = `
    select r.gwgr_id
@@ -52,7 +53,8 @@ const sqlRTSQuery string = `
          ,r.dbegin
          ,r.dend
      from rms_rates r
-    where r.dend > sysdate`
+    where r.dend > sysdate
+      and r.gwgr_id = 4728`
 
 const sqlRVCountQuery string = `
      select count(*)
