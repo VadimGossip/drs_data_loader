@@ -108,17 +108,8 @@ func (r *repository) getRateValue(rmsvId int64) (model.Rate, error) {
 }
 
 func (r *repository) getCurrencyRate(currencyId int64, dateAt int64) (float64, error) {
-	for key, val := range r.data.curRates {
-		if key != currencyId {
-			fmt.Println(key, currencyId)
-			continue
-		}
-		fmt.Println(key, val)
-	}
 	if hist, ok := r.data.curRates[currencyId]; ok {
-		fmt.Println("found", currencyId, dateAt)
 		for _, item := range hist {
-			fmt.Println(currencyId, dateAt, item.DBegin, item.DEnd)
 			if dateAt >= item.DBegin && dateAt < item.DEnd {
 				return item.CurrencyRate, nil
 			}
@@ -160,7 +151,7 @@ func (r *repository) FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber 
 	}
 
 	fmt.Println(rv)
-	currencyRate, err := r.getCurrencyRate(dateAt, rv.CurrencyId)
+	currencyRate, err := r.getCurrencyRate(rv.CurrencyId, dateAt)
 	if err != nil {
 		return 0, 0, err
 	}
