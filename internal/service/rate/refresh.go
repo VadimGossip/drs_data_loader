@@ -65,6 +65,7 @@ func (s *service) refreshARmsgs(ctx context.Context) error {
 	return nil
 }
 
+// To_do убрать колхоз с чанками в клиент Тарантула
 func (s *service) refreshRates(ctx context.Context) error {
 	ts := time.Now()
 	rates, rows, err := s.srcRateRepo.GetRates(ctx)
