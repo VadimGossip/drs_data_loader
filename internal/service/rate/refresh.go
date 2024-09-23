@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var chunkSize int = 100_000
+var chunkSize int = 50_000
 
 func (s *service) refreshBRmsgs(ctx context.Context) error {
 	ts := time.Now()
