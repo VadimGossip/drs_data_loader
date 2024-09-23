@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"github.com/pkg/errors"
 	"log"
 	"net/http"
 	"os"
@@ -11,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/VadimGossip/drs_data_loader/internal/closer"
-
+	"github.com/VadimGossip/platform_common/pkg/closer"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )

@@ -2,13 +2,13 @@ package tarantool
 
 import (
 	"fmt"
-	db "github.com/VadimGossip/drs_data_loader/internal/client/db/tarantool"
-	"github.com/VadimGossip/drs_data_loader/internal/model"
-	"github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool/converter"
 
-	def "github.com/VadimGossip/drs_data_loader/internal/repository"
-
+	db "github.com/VadimGossip/platform_common/pkg/db/tarantool"
 	"github.com/tarantool/go-tarantool/v2"
+
+	"github.com/VadimGossip/drs_data_loader/internal/model"
+	def "github.com/VadimGossip/drs_data_loader/internal/repository"
+	"github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool/converter"
 )
 
 var _ def.DstRatesRepository = (*repository)(nil)

@@ -2,11 +2,12 @@ package db
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -14,16 +15,15 @@ const (
 	tdbPortEnvName     = "TARANTOOL_PORT"
 	tdbUsernameEnvName = "TARANTOOL_USERNAME"
 	tdbPasswordEnvName = "TARANTOOL_PASSWORD"
+	tdbTimeoutMin      = "TARANTOOL_TIMEOUT_MIN"
 )
 
 type tdbConfig struct {
-	host         string
-	port         int
-	username     string
-	password     string
-	db           int
-	readTimeout  time.Duration
-	writeTimeout time.Duration
+	host       string
+	port       int
+	username   string
+	password   string
+	timeoutMin int
 }
 
 func (cfg *tdbConfig) setFromEnv() error {
@@ -45,6 +45,16 @@ func (cfg *tdbConfig) setFromEnv() error {
 
 	cfg.username = os.Getenv(tdbUsernameEnvName)
 	cfg.password = os.Getenv(tdbPasswordEnvName)
+
+	timeoutMinStr := os.Getenv(tdbTimeoutMin)
+	if len(timeoutMinStr) == 0 {
+		return fmt.Errorf("tdbConfig timeout min not found")
+	}
+
+	cfg.timeoutMin, err = strconv.Atoi(timeoutMinStr)
+	if err != nil {
+		return errors.Wrap(err, "failed to parse tdbConfig timeout min")
+	}
 
 	return nil
 }
@@ -68,4 +78,8 @@ func (cfg *tdbConfig) Username() string {
 
 func (cfg *tdbConfig) Password() string {
 	return cfg.password
+}
+
+func (cfg *tdbConfig) Timeout() time.Duration {
+	return time.Duration(cfg.timeoutMin) * time.Minute
 }
