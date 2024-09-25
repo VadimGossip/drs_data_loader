@@ -6,7 +6,7 @@ option go_package = "github.com/VadimGossip/drs_data_loader/pkg/rate_v1;rate_v1"
 
 service RateV1 {
   rpc FindRate(FindRateRequest) returns (FindRateResponse);
-  rpc FindAllSupRates(FindSupRatesRequest) returns (FindSupRatesResponse);
+  rpc FindSupRates(FindSupRatesRequest) returns (FindSupRatesResponse);
 }
 
 message FindRateRequest {
