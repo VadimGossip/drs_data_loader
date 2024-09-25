@@ -3,7 +3,7 @@ Loads data from the source database, into the receiver database, the source is c
 
 For simplicity, I load environment variables from a file that I don't store in the git.
 Example of variables from a file
-
+```
 APP_HTTP_HOST=
 APP_HTTP_PORT=
 
@@ -24,3 +24,4 @@ TARANTOOL_TIMEOUT_MIN=
 
 #DST_DB TARANTOOL|KDB|CACHE
 DST_DB=
+```
