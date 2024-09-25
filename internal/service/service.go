@@ -12,5 +12,6 @@ type RateService interface {
 }
 
 type GatewayService interface {
+	Refresh(ctx context.Context) error
 	GetSupGwgrIds(ctx context.Context) ([]int64, error)
 }

@@ -110,8 +110,12 @@ func (a *App) Run(ctx context.Context) error {
 		}
 	}()
 
+	if err := a.serviceProvider.GatewayService(ctx).Refresh(ctx); err != nil {
+		logrus.Errorf("[%s] failed to refresh gateway service: %v", a.name, err)
+	}
+
 	if err := a.serviceProvider.RateService(ctx).Refresh(ctx); err != nil {
-		logrus.Errorf("[%s] failed to rate service: %v", a.name, err)
+		logrus.Errorf("[%s] failed to refresh rate service: %v", a.name, err)
 	}
 
 	gracefulShutdown(ctx, cancel, wg)
