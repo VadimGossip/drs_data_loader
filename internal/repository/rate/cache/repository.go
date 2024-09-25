@@ -126,14 +126,14 @@ func (r *repository) getCurrencyRate(currencyId int64, dateAt int64) (float64, e
 	return 0, fmt.Errorf("can't find currency rate")
 }
 
-func (r *repository) FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber string) (int64, float64, error) {
+func (r *repository) FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber string) (model.RateBase, error) {
 	bRmsgId, err := r.getBRmsg(model.BRmsgKey{
 		GwgrId:    gwgrId,
 		Direction: dir,
 		Code:      bNumber,
 	}, dateAt)
 	if err != nil {
-		return 0, 0, err
+		return model.RateBase{}, err
 	}
 
 	aRmsgId := r.getARmsg(model.ARmsgKey{
@@ -150,18 +150,36 @@ func (r *repository) FindRate(gwgrId, dateAt int64, dir uint8, aNumber, bNumber 
 		BRmsgId:   bRmsgId,
 	}, dateAt)
 	if err != nil {
-		return 0, 0, err
+		return model.RateBase{}, err
 	}
 
 	rv, err := r.getRateValue(rmsvId)
 	if err != nil {
-		return 0, 0, err
+		return model.RateBase{}, err
 	}
 
 	currencyRate, err := r.getCurrencyRate(rv.CurrencyId, dateAt)
 	if err != nil {
-		return 0, 0, err
+		return model.RateBase{}, err
 	}
 
-	return rmsrId, util.RoundFloat(rv.Price*currencyRate, 7), nil
+	return model.RateBase{
+		RmsrId:    rmsrId,
+		PriceBase: util.RoundFloat(rv.Price*currencyRate, 7),
+	}, nil
+}
+
+func (r *repository) FindSupRates(gwgrIds []int64, dateAt int64, aNumber, bNumber string) (map[int64]model.RateBase, error) {
+	result := make(map[int64]model.RateBase)
+	for _, gwgrId := range gwgrIds {
+		rateBase, err := r.FindRate(gwgrId, dateAt, 1, aNumber, bNumber)
+		if err != nil {
+			continue
+		}
+		result[gwgrId] = rateBase
+	}
+	if len(result) == 0 {
+		return nil, fmt.Errorf("no sup rates found")
+	}
+	return result, nil
 }

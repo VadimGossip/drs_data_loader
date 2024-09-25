@@ -20,10 +20,13 @@ import (
 	serverCfg "github.com/VadimGossip/drs_data_loader/internal/config/server"
 	serviceCfg "github.com/VadimGossip/drs_data_loader/internal/config/service"
 	"github.com/VadimGossip/drs_data_loader/internal/repository"
+	cacheGatewayRepo "github.com/VadimGossip/drs_data_loader/internal/repository/gateway/cache"
+	srcGatewayRepo "github.com/VadimGossip/drs_data_loader/internal/repository/gateway/oracle"
 	cacheRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/cache"
 	srcRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/oracle"
 	tarantoolRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool"
 	"github.com/VadimGossip/drs_data_loader/internal/service"
+	gatewayService "github.com/VadimGossip/drs_data_loader/internal/service/gateway"
 	rateService "github.com/VadimGossip/drs_data_loader/internal/service/rate"
 )
 
@@ -41,8 +44,11 @@ type serviceProvider struct {
 	tarantoolClient tarantool.Client
 	srcRateRepo     repository.SrcRatesRepository
 	dstRateRepo     repository.DstRatesRepository
+	srcGatewayRepo  repository.SrcGatewayRepository
+	dstGatewayRepo  repository.DstGatewayRepository
 
-	rateService service.RateService
+	rateService    service.RateService
+	gatewayService service.GatewayService
 
 	rateImpl *rate.Implementation
 }
@@ -213,6 +219,20 @@ func (s *serviceProvider) DstRateRepo(ctx context.Context) repository.DstRatesRe
 	return s.dstRateRepo
 }
 
+func (s *serviceProvider) SrcGatewayRepo(ctx context.Context) repository.SrcGatewayRepository {
+	if s.srcGatewayRepo == nil {
+		s.srcGatewayRepo = srcGatewayRepo.NewRepository(s.OracleClient(ctx))
+	}
+	return s.srcGatewayRepo
+}
+
+func (s *serviceProvider) DstGatewayRepo(_ context.Context) repository.DstGatewayRepository {
+	if s.dstGatewayRepo == nil {
+		s.dstGatewayRepo = cacheGatewayRepo.NewRepository()
+	}
+	return s.dstGatewayRepo
+}
+
 func (s *serviceProvider) RateService(ctx context.Context) service.RateService {
 	if s.rateService == nil {
 		s.rateService = rateService.NewService(s.DstRateRepo(ctx), s.SrcRateRepo(ctx), s.txManager)
@@ -220,9 +240,16 @@ func (s *serviceProvider) RateService(ctx context.Context) service.RateService {
 	return s.rateService
 }
 
+func (s *serviceProvider) GatewayService(ctx context.Context) service.GatewayService {
+	if s.gatewayService == nil {
+		s.gatewayService = gatewayService.NewService(s.DstGatewayRepo(ctx), s.SrcGatewayRepo(ctx), s.txManager)
+	}
+	return s.gatewayService
+}
+
 func (s *serviceProvider) RateImpl(ctx context.Context) *rate.Implementation {
 	if s.rateImpl == nil {
-		s.rateImpl = rate.NewImplementation(s.RateService(ctx))
+		s.rateImpl = rate.NewImplementation(s.RateService(ctx), s.GatewayService(ctx))
 	}
 
 	return s.rateImpl

@@ -7,11 +7,13 @@ import (
 
 type Implementation struct {
 	desc.UnimplementedRateV1Server
-	rateService service.RateService
+	rateService    service.RateService
+	gatewayService service.GatewayService
 }
 
-func NewImplementation(rateService service.RateService) *Implementation {
+func NewImplementation(rateService service.RateService, gatewayService service.GatewayService) *Implementation {
 	return &Implementation{
-		rateService: rateService,
+		rateService:    rateService,
+		gatewayService: gatewayService,
 	}
 }

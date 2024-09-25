@@ -1,5 +1,13 @@
 package model
 
+const (
+	RAObjectKey     string = "RA"
+	RBObjectKey     string = "RB"
+	RTSObjectKey    string = "RTS"
+	RVObjectKey     string = "RV"
+	CURRTSObjectKey string = "CURRTS"
+)
+
 type ARmsgKey struct {
 	GwgrId    int64
 	Direction uint8
@@ -42,4 +50,9 @@ type CurrencyRateHist struct {
 	CurrencyRate float64
 	DBegin       int64
 	DEnd         int64
+}
+
+type RateBase struct {
+	RmsrId    int64
+	PriceBase float64
 }
