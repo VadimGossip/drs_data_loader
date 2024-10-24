@@ -289,18 +289,3 @@ func (r *repository) FindSupRates(dateAt int64, aNumber, bNumber uint64) (map[in
 	}
 	return result, nil
 }
-
-func (r *repository) FindSupRatesOld(gwgrIds []int64, dateAt int64, aNumber, bNumber uint64) (map[int64]model.RateBase, error) {
-	result := make(map[int64]model.RateBase)
-	for _, gwgrId := range gwgrIds {
-		rateBase, err := r.FindRate(gwgrId, dateAt, 1, aNumber, bNumber)
-		if err != nil {
-			continue
-		}
-		result[gwgrId] = rateBase
-	}
-	if len(result) == 0 {
-		return nil, fmt.Errorf("no sup rates found")
-	}
-	return result, nil
-}

@@ -12,12 +12,12 @@ import (
 
 func (s *service) refreshARmsgs(ctx context.Context) error {
 	ts := time.Now()
-	termARmsgs, rows, err := s.srcRateRepo.GetTermAGroups(ctx)
+	termARmsgs, tRows, err := s.srcRateRepo.GetTermAGroups(ctx)
 	if err != nil {
 		return fmt.Errorf("error while get term aRmsgs %s", err)
 	}
 
-	origARmsgs, rows, err := s.srcRateRepo.GetOrigAGroups(ctx)
+	origARmsgs, oRows, err := s.srcRateRepo.GetOrigAGroups(ctx)
 	if err != nil {
 		return fmt.Errorf("error while get orig aRmsgs %s", err)
 	}
@@ -30,18 +30,18 @@ func (s *service) refreshARmsgs(ctx context.Context) error {
 		return fmt.Errorf("error while load orig aRmsgs %s", err)
 	}
 
-	logrus.Infof("Refresh %s. Rows read: %d Duration: %s", model.RAObjectKey, rows, time.Since(ts))
+	logrus.Infof("Refresh %s. Rows read: %d Duration: %s", model.RAObjectKey, tRows+oRows, time.Since(ts))
 	return nil
 }
 
 func (s *service) refreshBRmsgs(ctx context.Context) error {
 	ts := time.Now()
-	termBRmsgs, rows, err := s.srcRateRepo.GetTermBGroups(ctx)
+	termBRmsgs, tRows, err := s.srcRateRepo.GetTermBGroups(ctx)
 	if err != nil {
 		return fmt.Errorf("error while get term bRmsgs %s", err)
 	}
 
-	origBRmsgs, rows, err := s.srcRateRepo.GetOrigBGroups(ctx)
+	origBRmsgs, oRows, err := s.srcRateRepo.GetOrigBGroups(ctx)
 	if err != nil {
 		return fmt.Errorf("error while get orig bRmsgs %s", err)
 	}
@@ -53,7 +53,7 @@ func (s *service) refreshBRmsgs(ctx context.Context) error {
 	if err = s.dstRateRepo.LoadOrigBGroups(origBRmsgs); err != nil {
 		return fmt.Errorf("error while load orig bRmsgs %s", err)
 	}
-	logrus.Infof("Refresh %s. Rows read: %d Duration: %s", model.RBObjectKey, rows, time.Since(ts))
+	logrus.Infof("Refresh %s. Rows read: %d Duration: %s", model.RBObjectKey, tRows+oRows, time.Since(ts))
 	return nil
 }
 

@@ -30,7 +30,7 @@ func (r *repository) GetTermAGroups(ctx context.Context) (map[model.ARmsgKey][]m
 	var err error
 	var rows *sql.Rows
 	var actualRows, expectRows int
-	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRACountQuery, 0)).Scan(&expectRows); err != nil {
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRACountQuery, "0")).Scan(&expectRows); err != nil {
 		return nil, actualRows, err
 	}
 
@@ -43,7 +43,7 @@ func (r *repository) GetTermAGroups(ctx context.Context) (map[model.ARmsgKey][]m
 		preFetchSize = expectRows + 1
 		fetchSize = expectRows
 	}
-	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRAQuery, 0), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRAQuery, "0"), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
 	if err != nil {
 		return nil, actualRows, err
 	}
@@ -95,7 +95,7 @@ func (r *repository) GetTermBGroups(ctx context.Context) (map[model.BRmsgKey][]m
 	var err error
 	var rows *sql.Rows
 	var actualRows, expectRows int
-	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRBCountQuery, 0)).Scan(&expectRows); err != nil {
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRBCountQuery, "0")).Scan(&expectRows); err != nil {
 		return nil, 0, err
 	}
 
@@ -108,7 +108,7 @@ func (r *repository) GetTermBGroups(ctx context.Context) (map[model.BRmsgKey][]m
 		preFetchSize = expectRows + 1
 		fetchSize = expectRows
 	}
-	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRBQuery, 0), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRBQuery, "0"), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -160,7 +160,7 @@ func (r *repository) GetOrigAGroups(ctx context.Context) (map[uint64]map[model.G
 	var err error
 	var rows *sql.Rows
 	var actualRows, expectRows int
-	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRACountQuery, 1)).Scan(&expectRows); err != nil {
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRACountQuery, "1")).Scan(&expectRows); err != nil {
 		return nil, actualRows, err
 	}
 
@@ -173,7 +173,7 @@ func (r *repository) GetOrigAGroups(ctx context.Context) (map[uint64]map[model.G
 		preFetchSize = expectRows + 1
 		fetchSize = expectRows
 	}
-	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRAQuery, 1), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRAQuery, "1"), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
 	if err != nil {
 		return nil, actualRows, err
 	}
@@ -228,7 +228,7 @@ func (r *repository) GetOrigBGroups(ctx context.Context) (map[uint64]map[int64][
 	var err error
 	var rows *sql.Rows
 	var actualRows, expectRows int
-	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRBCountQuery, 0)).Scan(&expectRows); err != nil {
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRBCountQuery, "1")).Scan(&expectRows); err != nil {
 		return nil, 0, err
 	}
 
@@ -241,7 +241,7 @@ func (r *repository) GetOrigBGroups(ctx context.Context) (map[uint64]map[int64][
 		preFetchSize = expectRows + 1
 		fetchSize = expectRows
 	}
-	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRBQuery, 0), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRBQuery, "1"), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
 	if err != nil {
 		return nil, 0, err
 	}

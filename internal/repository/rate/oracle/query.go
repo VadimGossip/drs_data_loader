@@ -6,7 +6,7 @@ const sqlRACountQuery string = `
        join rms_rate_agroups       a on a.rmsg_id   = ac.rmsg_id
        join rms_rate_bgroups       b on b.dest_name = a.dest_name
       where ac.dend > sysdate
-        and ac.direction = %d`
+        and ac.direction = %s`
 
 const sqlRAQuery string = `
      select /*+ index(ac PK_RMSRAGC) */ b.rmsg_id as b_rmsg_id
@@ -20,13 +20,13 @@ const sqlRAQuery string = `
         join rms_rate_agroups       a on a.rmsg_id   = ac.rmsg_id
         join rms_rate_bgroups       b on b.dest_name = a.dest_name
        where ac.dend > sysdate
-         and ac.direction = %d`
+         and ac.direction = %s`
 
 const sqlRBCountQuery string = `
 	 select count(*)
        from rms_rate_bgroup_codes bc
       where bc.dend > sysdate
-        and bc.direction = %d`
+        and bc.direction = %s`
 
 const sqlRBQuery string = `
 	select /*+ index(bc PK_RMSRBGC) */ bc.rmsg_id
@@ -37,7 +37,7 @@ const sqlRBQuery string = `
           ,bc.dend
       from rms_rate_bgroup_codes bc
      where bc.dend > sysdate
-       and bc.direction = %d`
+       and bc.direction = %s`
 
 const sqlRTSCountQuery string = `
     select count(*)
