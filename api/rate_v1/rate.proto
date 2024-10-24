@@ -13,8 +13,8 @@ message FindRateRequest {
   int64 gwgrId = 1;
   int64 dateAt = 2;
   uint32 dir = 3;
-  string aNumber = 4;
-  string bNumber = 5;
+  uint64 aNumber = 4;
+  uint64 bNumber = 5;
 }
 
 message RateBase {
@@ -28,8 +28,8 @@ message FindRateResponse {
 
 message FindSupRatesRequest {
   int64 dateAt = 1;
-  string aNumber = 2;
-  string bNumber = 3;
+  uint64 aNumber = 2;
+  uint64 bNumber = 3;
 }
 
 message SupRateBase {

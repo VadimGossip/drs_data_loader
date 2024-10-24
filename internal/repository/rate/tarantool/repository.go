@@ -7,11 +7,10 @@ import (
 	"github.com/tarantool/go-tarantool/v2"
 
 	"github.com/VadimGossip/drs_data_loader/internal/model"
-	def "github.com/VadimGossip/drs_data_loader/internal/repository"
 	"github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool/converter"
 )
 
-var _ def.DstRatesRepository = (*repository)(nil)
+// Need refactor like cache
 
 const (
 	insertBRmsgGroupsFunc   string = "rates.insert_b_rmsg_groups"

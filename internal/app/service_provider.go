@@ -24,7 +24,6 @@ import (
 	srcGatewayRepo "github.com/VadimGossip/drs_data_loader/internal/repository/gateway/oracle"
 	cacheRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/cache"
 	srcRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/oracle"
-	tarantoolRateRepo "github.com/VadimGossip/drs_data_loader/internal/repository/rate/tarantool"
 	"github.com/VadimGossip/drs_data_loader/internal/service"
 	gatewayService "github.com/VadimGossip/drs_data_loader/internal/service/gateway"
 	rateService "github.com/VadimGossip/drs_data_loader/internal/service/rate"
@@ -207,11 +206,11 @@ func (s *serviceProvider) SrcRateRepo(ctx context.Context) repository.SrcRatesRe
 	return s.srcRateRepo
 }
 
-func (s *serviceProvider) DstRateRepo(ctx context.Context) repository.DstRatesRepository {
+func (s *serviceProvider) DstRateRepo(_ context.Context) repository.DstRatesRepository {
 	if s.dstRateRepo == nil {
 		testDb := s.ServiceProviderConfig().DstDB()
 		if testDb == s.ServiceProviderConfig().TarantoolTestDB() {
-			s.dstRateRepo = tarantoolRateRepo.NewRepository(s.TarantoolClient(ctx))
+			logrus.Fatalf("tarantool need refactor of mass supplier rates")
 		} else {
 			s.dstRateRepo = cacheRateRepo.NewRepository()
 		}

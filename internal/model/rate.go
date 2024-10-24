@@ -8,17 +8,33 @@ const (
 	CURRTSObjectKey string = "CURRTS"
 )
 
+type GwgrRmsgKey struct {
+	GwgrId int64
+	RmsgId int64
+}
+
 type ARmsgKey struct {
 	GwgrId    int64
 	Direction uint8
 	BRmsgId   int64
-	Code      string
+	Code      uint64
+}
+
+type ARmsgShortKey struct {
+	GwgrId  int64
+	BRmsgId int64
+	Code    uint64
 }
 
 type BRmsgKey struct {
 	GwgrId    int64
 	Direction uint8
-	Code      string
+	Code      uint64
+}
+
+type BRmsgShortKey struct {
+	GwgrId int64
+	Code   uint64
 }
 
 type IdHistItem struct {

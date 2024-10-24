@@ -7,8 +7,8 @@ import (
 
 type RateService interface {
 	Refresh(ctx context.Context) error
-	FindRate(ctx context.Context, gwgrId, dateAt int64, dir uint8, aNumber, bNumber string) (model.RateBase, error)
-	FindSupRates(_ context.Context, gwgrIds []int64, dateAt int64, aNumber, bNumber string) (map[int64]model.RateBase, error)
+	FindRate(ctx context.Context, gwgrId, dateAt int64, dir uint8, aNumber, bNumber uint64) (model.RateBase, error)
+	FindSupRates(_ context.Context, dateAt int64, aNumber, bNumber uint64) (map[int64]model.RateBase, error)
 }
 
 type GatewayService interface {

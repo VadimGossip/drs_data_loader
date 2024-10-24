@@ -12,34 +12,48 @@ import (
 
 func (s *service) refreshARmsgs(ctx context.Context) error {
 	ts := time.Now()
-	aRmsgs, rows, err := s.srcRateRepo.GetAGroups(ctx)
+	termARmsgs, rows, err := s.srcRateRepo.GetTermAGroups(ctx)
 	if err != nil {
-		return fmt.Errorf("error while get aRmsgs %s", err)
+		return fmt.Errorf("error while get term aRmsgs %s", err)
 	}
-	logrus.Infof("Get %s. Rows read: %d Duration: %s", model.RAObjectKey, rows, time.Since(ts))
 
-	ts = time.Now()
-	if err = s.dstRateRepo.LoadAGroups(aRmsgs); err != nil {
-		return fmt.Errorf("error while load aRmsgs %s", err)
+	origARmsgs, rows, err := s.srcRateRepo.GetOrigAGroups(ctx)
+	if err != nil {
+		return fmt.Errorf("error while get orig aRmsgs %s", err)
 	}
-	logrus.Infof("Load %s. Duration: %s", model.RAObjectKey, time.Since(ts))
 
+	if err = s.dstRateRepo.LoadTermAGroups(termARmsgs); err != nil {
+		return fmt.Errorf("error while load term aRmsgs %s", err)
+	}
+
+	if err = s.dstRateRepo.LoadOrigAGroups(origARmsgs); err != nil {
+		return fmt.Errorf("error while load orig aRmsgs %s", err)
+	}
+
+	logrus.Infof("Refresh %s. Rows read: %d Duration: %s", model.RAObjectKey, rows, time.Since(ts))
 	return nil
 }
 
 func (s *service) refreshBRmsgs(ctx context.Context) error {
 	ts := time.Now()
-	bRmsgs, rows, err := s.srcRateRepo.GetBGroups(ctx)
+	termBRmsgs, rows, err := s.srcRateRepo.GetTermBGroups(ctx)
 	if err != nil {
-		return fmt.Errorf("error while get bRmsgs %s", err)
+		return fmt.Errorf("error while get term bRmsgs %s", err)
 	}
-	logrus.Infof("Get %s. Rows read: %d Duration: %s", model.RBObjectKey, rows, time.Since(ts))
 
-	ts = time.Now()
-	if err = s.dstRateRepo.LoadBGroups(bRmsgs); err != nil {
-		return fmt.Errorf("error while load bRmsgs %s", err)
+	origBRmsgs, rows, err := s.srcRateRepo.GetOrigBGroups(ctx)
+	if err != nil {
+		return fmt.Errorf("error while get orig bRmsgs %s", err)
 	}
-	logrus.Infof("Load %s. Duration: %s", model.RBObjectKey, time.Since(ts))
+
+	if err = s.dstRateRepo.LoadTermBGroups(termBRmsgs); err != nil {
+		return fmt.Errorf("error while load term bRmsgs %s", err)
+	}
+
+	if err = s.dstRateRepo.LoadOrigBGroups(origBRmsgs); err != nil {
+		return fmt.Errorf("error while load orig bRmsgs %s", err)
+	}
+	logrus.Infof("Refresh %s. Rows read: %d Duration: %s", model.RBObjectKey, rows, time.Since(ts))
 	return nil
 }
 

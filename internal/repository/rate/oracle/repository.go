@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/VadimGossip/drs_data_loader/internal/model"
 	def "github.com/VadimGossip/drs_data_loader/internal/repository"
+	"strconv"
 	"time"
 
 	db "github.com/VadimGossip/platform_common/pkg/db/oracle"
@@ -25,72 +26,11 @@ func NewRepository(db db.Client) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) GetBGroups(ctx context.Context) (map[model.BRmsgKey][]model.IdHistItem, int, error) {
+func (r *repository) GetTermAGroups(ctx context.Context) (map[model.ARmsgKey][]model.IdHistItem, int, error) {
 	var err error
 	var rows *sql.Rows
 	var actualRows, expectRows int
-	if err = r.db.DB().QueryRowContext(ctx, sqlRBCountQuery).Scan(&expectRows); err != nil {
-		return nil, 0, err
-	}
-
-	if expectRows == 0 {
-		return nil, 0, nil
-	}
-
-	preFetchSize, fetchSize := defaultFetchSize, defaultFetchSize
-	if expectRows <= defaultFetchSize {
-		preFetchSize = expectRows + 1
-		fetchSize = expectRows
-	}
-	rows, err = r.db.DB().QueryContext(ctx, sqlRBQuery, godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
-	if err != nil {
-		return nil, 0, err
-	}
-	defer func() {
-		if err = rows.Close(); err != nil {
-			logrus.WithFields(logrus.Fields{
-				"handler": "GetBGroups",
-				"problem": "rows close",
-			}).Error(err)
-		}
-	}()
-
-	var bRmsgId, gwgrId int64
-	var code string
-	var dBegin, dEnd time.Time
-	var direction uint8
-	result := make(map[model.BRmsgKey][]model.IdHistItem)
-
-	for rows.Next() {
-		if err = rows.Scan(&bRmsgId, &gwgrId, &direction, &code, &dBegin, &dEnd); err != nil {
-			return nil, 0, err
-		}
-		key := model.BRmsgKey{
-			GwgrId:    gwgrId,
-			Direction: direction,
-			Code:      code,
-		}
-
-		rbg := model.IdHistItem{
-			Id:     bRmsgId,
-			DBegin: dBegin.Unix(),
-			DEnd:   dEnd.Unix(),
-		}
-		result[key] = append(result[key], rbg)
-		actualRows++
-	}
-	if expectRows != actualRows {
-		return nil, actualRows, fmt.Errorf("GetGroups. expectRows %d != actualRows %d", expectRows, actualRows)
-	}
-
-	return result, actualRows, nil
-}
-
-func (r *repository) GetAGroups(ctx context.Context) (map[model.ARmsgKey][]model.IdHistItem, int, error) {
-	var err error
-	var rows *sql.Rows
-	var actualRows, expectRows int
-	if err = r.db.DB().QueryRowContext(ctx, sqlRACountQuery).Scan(&expectRows); err != nil {
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRACountQuery, 0)).Scan(&expectRows); err != nil {
 		return nil, actualRows, err
 	}
 
@@ -103,7 +43,7 @@ func (r *repository) GetAGroups(ctx context.Context) (map[model.ARmsgKey][]model
 		preFetchSize = expectRows + 1
 		fetchSize = expectRows
 	}
-	rows, err = r.db.DB().QueryContext(ctx, sqlRAQuery, godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRAQuery, 0), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
 	if err != nil {
 		return nil, actualRows, err
 	}
@@ -117,31 +57,232 @@ func (r *repository) GetAGroups(ctx context.Context) (map[model.ARmsgKey][]model
 	}()
 
 	var bRmsgId, aRmsgId, gwgrId int64
-	var code string
+	var codeStr string
 	var dBegin, dEnd time.Time
+	var code uint64
 	var direction uint8
 	result := make(map[model.ARmsgKey][]model.IdHistItem)
 	for rows.Next() {
-		if err = rows.Scan(&bRmsgId, &aRmsgId, &gwgrId, &direction, &code, &dBegin, &dEnd); err != nil {
+		if err = rows.Scan(&bRmsgId, &aRmsgId, &gwgrId, &direction, &codeStr, &dBegin, &dEnd); err != nil {
 			return nil, actualRows, err
 		}
-		key := model.ARmsgKey{
-			GwgrId:    gwgrId,
-			Direction: direction,
-			BRmsgId:   bRmsgId,
-			Code:      code,
-		}
+		code, err = strconv.ParseUint(codeStr, 10, 64)
+		if err == nil {
+			key := model.ARmsgKey{
+				GwgrId:    gwgrId,
+				Direction: direction,
+				BRmsgId:   bRmsgId,
+				Code:      code,
+			}
 
-		rag := model.IdHistItem{
-			Id:     aRmsgId,
-			DBegin: dBegin.Unix(),
-			DEnd:   dEnd.Unix(),
+			rag := model.IdHistItem{
+				Id:     aRmsgId,
+				DBegin: dBegin.Unix(),
+				DEnd:   dEnd.Unix(),
+			}
+			result[key] = append(result[key], rag)
 		}
-		result[key] = append(result[key], rag)
 		actualRows++
 	}
 	if expectRows != actualRows {
 		return nil, actualRows, fmt.Errorf("GetAGroups. expectRows %d != actualRows %d", expectRows, actualRows)
+	}
+
+	return result, actualRows, nil
+}
+
+func (r *repository) GetTermBGroups(ctx context.Context) (map[model.BRmsgKey][]model.IdHistItem, int, error) {
+	var err error
+	var rows *sql.Rows
+	var actualRows, expectRows int
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRBCountQuery, 0)).Scan(&expectRows); err != nil {
+		return nil, 0, err
+	}
+
+	if expectRows == 0 {
+		return nil, 0, nil
+	}
+
+	preFetchSize, fetchSize := defaultFetchSize, defaultFetchSize
+	if expectRows <= defaultFetchSize {
+		preFetchSize = expectRows + 1
+		fetchSize = expectRows
+	}
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRBQuery, 0), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	if err != nil {
+		return nil, 0, err
+	}
+	defer func() {
+		if err = rows.Close(); err != nil {
+			logrus.WithFields(logrus.Fields{
+				"handler": "GetBGroups",
+				"problem": "rows close",
+			}).Error(err)
+		}
+	}()
+
+	var bRmsgId, gwgrId int64
+	var codeStr string
+	var dBegin, dEnd time.Time
+	var code uint64
+	var direction uint8
+	result := make(map[model.BRmsgKey][]model.IdHistItem)
+
+	for rows.Next() {
+		if err = rows.Scan(&bRmsgId, &gwgrId, &direction, &codeStr, &dBegin, &dEnd); err != nil {
+			return nil, 0, err
+		}
+		code, err = strconv.ParseUint(codeStr, 10, 64)
+		if err == nil {
+			key := model.BRmsgKey{
+				GwgrId:    gwgrId,
+				Direction: direction,
+				Code:      code,
+			}
+
+			rbg := model.IdHistItem{
+				Id:     bRmsgId,
+				DBegin: dBegin.Unix(),
+				DEnd:   dEnd.Unix(),
+			}
+			result[key] = append(result[key], rbg)
+		}
+		actualRows++
+	}
+	if expectRows != actualRows {
+		return nil, actualRows, fmt.Errorf("GetGroups. expectRows %d != actualRows %d", expectRows, actualRows)
+	}
+
+	return result, actualRows, nil
+}
+
+func (r *repository) GetOrigAGroups(ctx context.Context) (map[uint64]map[model.GwgrRmsgKey][]model.IdHistItem, int, error) {
+	var err error
+	var rows *sql.Rows
+	var actualRows, expectRows int
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRACountQuery, 1)).Scan(&expectRows); err != nil {
+		return nil, actualRows, err
+	}
+
+	if expectRows == 0 {
+		return nil, 0, nil
+	}
+
+	preFetchSize, fetchSize := defaultFetchSize, defaultFetchSize
+	if expectRows <= defaultFetchSize {
+		preFetchSize = expectRows + 1
+		fetchSize = expectRows
+	}
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRAQuery, 1), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	if err != nil {
+		return nil, actualRows, err
+	}
+	defer func() {
+		if err = rows.Close(); err != nil {
+			logrus.WithFields(logrus.Fields{
+				"handler": "GetAGroups",
+				"problem": "rows close",
+			}).Error(err)
+		}
+	}()
+
+	var bRmsgId, aRmsgId, gwgrId int64
+	var codeStr string
+	var dBegin, dEnd time.Time
+	var code uint64
+	var direction uint8
+	result := make(map[uint64]map[model.GwgrRmsgKey][]model.IdHistItem)
+	for rows.Next() {
+		if err = rows.Scan(&bRmsgId, &aRmsgId, &gwgrId, &direction, &codeStr, &dBegin, &dEnd); err != nil {
+			return nil, actualRows, err
+		}
+		code, err = strconv.ParseUint(codeStr, 10, 64)
+		if err == nil {
+			if _, ok := result[code]; !ok {
+				result[code] = make(map[model.GwgrRmsgKey][]model.IdHistItem)
+			}
+
+			innerKey := model.GwgrRmsgKey{
+				GwgrId: gwgrId,
+				RmsgId: bRmsgId,
+			}
+
+			rag := model.IdHistItem{
+				Id:     aRmsgId,
+				DBegin: dBegin.Unix(),
+				DEnd:   dEnd.Unix(),
+			}
+
+			result[code][innerKey] = append(result[code][innerKey], rag)
+		}
+		actualRows++
+	}
+	if expectRows != actualRows {
+		return nil, actualRows, fmt.Errorf("GetAGroups. expectRows %d != actualRows %d", expectRows, actualRows)
+	}
+
+	return result, actualRows, nil
+}
+
+func (r *repository) GetOrigBGroups(ctx context.Context) (map[uint64]map[int64][]model.IdHistItem, int, error) {
+	var err error
+	var rows *sql.Rows
+	var actualRows, expectRows int
+	if err = r.db.DB().QueryRowContext(ctx, fmt.Sprintf(sqlRBCountQuery, 0)).Scan(&expectRows); err != nil {
+		return nil, 0, err
+	}
+
+	if expectRows == 0 {
+		return nil, 0, nil
+	}
+
+	preFetchSize, fetchSize := defaultFetchSize, defaultFetchSize
+	if expectRows <= defaultFetchSize {
+		preFetchSize = expectRows + 1
+		fetchSize = expectRows
+	}
+	rows, err = r.db.DB().QueryContext(ctx, fmt.Sprintf(sqlRBQuery, 0), godror.PrefetchCount(preFetchSize), godror.FetchArraySize(fetchSize))
+	if err != nil {
+		return nil, 0, err
+	}
+	defer func() {
+		if err = rows.Close(); err != nil {
+			logrus.WithFields(logrus.Fields{
+				"handler": "GetBGroups",
+				"problem": "rows close",
+			}).Error(err)
+		}
+	}()
+
+	var bRmsgId, gwgrId int64
+	var codeStr string
+	var dBegin, dEnd time.Time
+	var code uint64
+	var direction uint8
+	result := make(map[uint64]map[int64][]model.IdHistItem)
+
+	for rows.Next() {
+		if err = rows.Scan(&bRmsgId, &gwgrId, &direction, &codeStr, &dBegin, &dEnd); err != nil {
+			return nil, 0, err
+		}
+		code, err = strconv.ParseUint(codeStr, 10, 64)
+		if err == nil {
+			if _, ok := result[code]; !ok {
+				result[code] = make(map[int64][]model.IdHistItem)
+			}
+
+			rbg := model.IdHistItem{
+				Id:     bRmsgId,
+				DBegin: dBegin.Unix(),
+				DEnd:   dEnd.Unix(),
+			}
+
+			result[code][gwgrId] = append(result[code][gwgrId], rbg)
+		}
+		actualRows++
+	}
+	if expectRows != actualRows {
+		return nil, actualRows, fmt.Errorf("GetGroups. expectRows %d != actualRows %d", expectRows, actualRows)
 	}
 
 	return result, actualRows, nil
